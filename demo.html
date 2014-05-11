@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:site" content="@ericwenn">
+	<meta name="twitter:creator" content="@ericwenn">
+	<meta name="twitter:title" content="kalendar, a customizable jquery plugin">
+	<meta name="twitter:description" content="">
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>kalendar, a demo</title>
+	<link href="kalendar.css" rel="stylesheet">
+	<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+	<script src="kalendar.js"></script>
+
+</head>
+<body class="playground">
+<main>
+
+<div class="kalendar">
+</div>
+
+</main>
+
+<script>
+$(document).ready(function() {
+	$('.kalendar').kalendar({ 
+		color: "green",
+		firstDayOfWeek: "Sunday",
+		eventcolors: {
+			yellow: {
+				background: "#FC0",
+				text: "#000",
+				link: "#000"
+			},
+			blue: {
+				background: "#6180FC",
+				text: "#FFF",
+				link: "#FFF"
+			}
+		}
+	});
+
+});
+</script>
+</body>
+
+</html>
