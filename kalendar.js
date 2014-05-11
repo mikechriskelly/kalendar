@@ -63,30 +63,38 @@
   }
 
   kalendar.prototype.googleCal = function() {
+    var self = this;
     var f = function(c,k) { 
-      $.getJSON("https://www.googleapis.com/calendar/v3/calendars/"+c+"/events?key="+k, function(data) {
-        for(var i=0;i<data.items.length;i++) {
-          var it = data.items[i],
-            tstart = new Date(it.start.dateTime),
-            tend = new Date(it.end.dateTime),
-            t = {
-            title:it.summary,
-            location: it.location,
-            start: {
-              date: dToFormat(tstart, "YYYYMMDD"),
-              time: dToFormat(tstart, "HH.MM"),
-              d: new Date(it.start.dateTime)
-            },
-            end : {
-              date: dToFormat(tend, "YYYYMMDD"),
-              time: dToFormat(tend, "HH.MM"),
-              d: new Date(it.end.dateTime)
-            }
+      $.ajax({
+        url: 'https://www.googleapis.com/calendar/v3/calendars/'+c+'/events?key='+k,
+        dataType: 'json',
+        success: function(data) {
+
+          for(var i=0;i<data.items.length;i++) {
+            var it = data.items[i];
+            var tstart = new Date(it.start.dateTime);
+            var tend = new Date(it.end.dateTime);
+            var t = {
+                title:it.summary,
+                location: it.location,
+                start: {
+                  date: dToFormat(tstart, "YYYYMMDD"),
+                  time: dToFormat(tstart, "HH.MM"),
+                  d: new Date(it.start.dateTime)
+                },
+                end : {
+                  date: dToFormat(tend, "YYYYMMDD"),
+                  time: dToFormat(tend, "HH.MM"),
+                  d: new Date(it.end.dateTime)
+                }
+              };
+            tempEvents = pushToParsed(tempEvents, t);
           }
-          tempEvents = pushToParsed(tempEvents, t);
+          // Update view after events are received
+          self.setMonth();
         }
       });
-    }
+    };
     var tempEvents = this.options.eventsParsed;
     if(!!this.options.googleCal) {
       if(this.options.googleCal instanceof Array) {
@@ -96,7 +104,6 @@
       } else {
         f(this.options.googleCal.calendar, this.options.googleCal.apikey);
       }
-
     }
 
     this.options.eventsParsed = tempEvents;
