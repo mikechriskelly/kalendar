@@ -70,24 +70,41 @@
         dataType: 'json',
         success: function(data) {
 
+          var it, allDayEvent, tstart, tend, dateOffset;
+
           for(var i=0;i<data.items.length;i++) {
             var it = data.items[i];
-            var tstart = new Date(it.start.dateTime);
-            var tend = new Date(it.end.dateTime);
+            
+            // Parse Date and Time or just date for all day events
+            if(it.start.dateTime) { 
+              allDayEvent = false;
+              tstart = new Date(it.start.dateTime);
+              tend = new Date(it.end.dateTime);
+            } else {
+              allDayEvent = true;
+              tstart = new Date(it.start.date);
+              tend = new Date(it.end.date);
+
+              // Fix so all day event has same start and end day
+              var dateOffset = (24*60*60*1000) * 1; //1 day
+              tstart.setTime(tstart.getTime() + dateOffset); 
+            }
             var t = {
                 title:it.summary,
                 location: it.location,
                 start: {
                   date: dToFormat(tstart, "YYYYMMDD"),
                   time: dToFormat(tstart, "HH.MM"),
-                  d: new Date(it.start.dateTime)
+                  d: tstart
                 },
                 end : {
                   date: dToFormat(tend, "YYYYMMDD"),
                   time: dToFormat(tend, "HH.MM"),
-                  d: new Date(it.end.dateTime)
-                }
+                  d: tend
+                },
+                allDay: allDayEvent
               };
+            console.log(t);
             tempEvents = pushToParsed(tempEvents, t);
           }
           // Update view after events are received
